@@ -16,6 +16,8 @@ class CreatePortasTable extends Migration
         Schema::create('portas', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('porta');
+            $table->foreign('equipamento_id')->references('id')->on('equipamentos')->onDelete('cascade');
         });
     }
 

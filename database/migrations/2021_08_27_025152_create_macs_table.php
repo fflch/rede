@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSnapshotsTable extends Migration
+class CreateMacsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateSnapshotsTable extends Migration
      */
     public function up()
     {
-        Schema::create('snapshots', function (Blueprint $table) {
+        Schema::create('macs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->integer('vlan');
+            $table->macAddress('mac');
+            $table->foreign('snapshot_id')->references('id')->on('snapshots')->onDelete('cascade');
         });
     }
 
@@ -26,6 +29,6 @@ class CreateSnapshotsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('snapshots');
+        Schema::dropIfExists('macs');
     }
 }
