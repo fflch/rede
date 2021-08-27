@@ -17,7 +17,7 @@ class CreateSnapshotsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->enum('status', ['up', 'down']);
-            $table->foreign('porta_id')->references('id')->on('portas')->onDelete('cascade');
+            $table->foreignId('porta_id')->constrained();
         });
     }
 

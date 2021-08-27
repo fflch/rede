@@ -18,7 +18,7 @@ class CreateMacsTable extends Migration
             $table->timestamps();
             $table->integer('vlan');
             $table->macAddress('mac');
-            $table->foreign('snapshot_id')->references('id')->on('snapshots')->onDelete('cascade');
+            $table->foreignId('snapshot_id')->constrained();
         });
     }
 

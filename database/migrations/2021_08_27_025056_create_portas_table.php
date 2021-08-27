@@ -17,7 +17,7 @@ class CreatePortasTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('porta');
-            $table->foreign('equipamento_id')->references('id')->on('equipamentos')->onDelete('cascade');
+            $table->foreignId('equipamento_id')->constrained();
         });
     }
 
