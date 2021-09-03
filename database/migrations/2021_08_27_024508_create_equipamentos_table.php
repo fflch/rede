@@ -23,10 +23,10 @@ class CreateEquipamentosTable extends Migration
             $table->string('local');
             $table->string('position');
 
-            $table->string('uplink_extra_ports')->nullabe();
-            $table->string('rep_ports')->nullabe();
-            $table->string('printer_ports')->nullabe();
-            $table->string('ignore_ports')->nullabe();
+            $table->string('uplink_extra_ports')->nullable();
+            $table->string('rep_ports')->nullable();
+            $table->string('printer_ports')->nullable();
+            $table->string('ignore_ports')->nullable();
 
         });
     }
