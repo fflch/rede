@@ -23,18 +23,22 @@ class EquipamentoController extends Controller
 
         ]);
 
+        $hostname = str_replace('a', '', $request->hostname);
 
-        # uplink_extra_ports,rep_ports,printer_ports,ignore_ports
-
-        $equipamento = Equipamento::where('hostname',$request->hostname)->first();
+        $equipamento = Equipamento::where('hostname',$hostname)->first();
         if(!$equipamento) $equipamento = new Equipamento;
 
-        $equipamento->hostname = $request->hostname;
+        $equipamento->hostname = $hostname;
         $equipamento->model = $request->model;
         $equipamento->poe_type = $request->poe_type;
         $equipamento->ip = $request->ip;
         $equipamento->local = $request->local;
         $equipamento->position = $request->position;
+
+        $equipamento->uplink_extra_ports = $request->uplink_extra_ports;
+        $equipamento->rep_ports = $request->rep_ports;
+        $equipamento->printer_ports = $request->printer_ports;
+        $equipamento->ignore_ports = $request->ignore_ports;
         $equipamento->save();
 
         return response()->json($equipamento);
