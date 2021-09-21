@@ -16,16 +16,6 @@ class MacSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Factory::create();
-
-        $mac = [  
-
-            'vlan'          => $faker->numberBetween(0, 4096),
-            'mac'           => $faker->macAddress(),
-            'snapshot_id'   => Snapshot::inRandomOrder()->pluck('id')->first(), 
-        ];
-        
-        Mac::create($mac);
         Mac::factory(40)->create();
     }
 }

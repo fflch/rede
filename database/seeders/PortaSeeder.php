@@ -16,14 +16,6 @@ class PortaSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Factory::create();
-        $porta = [  
-
-            'porta'           => substr_replace('1/0/', $faker->numberbetween(0,48), 4, 0),
-            'equipamento_id'  => Equipamento::inRandomOrder()->pluck('id')->first(),
-        ];
-        
-        Porta::create($porta);
         Porta::factory(40)->create();
     }
 }

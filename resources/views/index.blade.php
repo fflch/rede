@@ -2,8 +2,11 @@
 
 @section('content')
 
-@include('partials.search')
-<br>
+@can('user')
+    @include('partials.search')
+    <br>
+@endcan
+
 
 @foreach($locais as $local=>$positions)
     <div class="row">
@@ -18,8 +21,12 @@
                 <b>{{ $position }}</b>
                 <ul class="list-group">
                     @foreach($equipamentos as $equipamento)
-                        <li class="list-group-item"> 
-                            <a href="/equipamentos/{{ $equipamento->id }}">{{ $equipamento->hostname }}</a>
+                        <li class="list-group-item">
+                            @can('user') 
+                                <a href="/equipamentos/{{ $equipamento->id }}">{{ $equipamento->hostname }}</a>
+                            @else 
+                                {{ $equipamento->hostname }}
+                            @endcan
                         </li>
                     @endforeach
                 </ul>

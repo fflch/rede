@@ -26,19 +26,22 @@
                 </tr>
             </thead>
             <tbody>
-                
                 @foreach($equipamento->portas as $porta)
                 <tr>
                     <td> {{ $porta->porta }} </td>
 
-                    <td> 
-                        @foreach($porta->latest_snapshot->macs as $mac)
-                        {{ $mac->mac }} - {{ $mac->vlan }} <br>
-                        @endforeach
-                    </td>
+                    @if($porta->latest_snapshot)
+                        <td>
+                            @foreach($porta->latest_snapshot->macs as $mac)
+                            {{ $mac->mac }} - {{ $mac->vlan }} <br>
+                            @endforeach
+                        </td>
 
-                    <td> {{ $porta->latest_snapshot->status }} </td>
-                    <td> {{ $porta->latest_snapshot->coletado_em }} </td>
+                        <td> {{ $porta->latest_snapshot->status }} </td>
+                        <td> {{ $porta->latest_snapshot->coletado_em }} </td>
+                    @else 
+                        <td></td><td></td><td></td>
+                    @endif
                 </tr>
                 @endforeach
                 

@@ -24,7 +24,7 @@ class MacController extends Controller
 
         $mac->snapshot_id = $request->snapshot_id;
         $mac->vlan = $request->vlan;
-        $mac->mac = Generic::format_mac($request->mac);
+        $mac->mac = Generic::format_mac(strtoupper($request->mac));
         $mac->save();
 
         return response()->json($mac);

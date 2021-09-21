@@ -18,7 +18,6 @@ class SnapshotController extends Controller
             'status' => 'required',
         ]);
 
-
         $snapshot = new Snapshot;
 
         $snapshot->porta_id = $request->porta_id;

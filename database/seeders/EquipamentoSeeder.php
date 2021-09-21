@@ -15,24 +15,6 @@ class EquipamentoSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Factory::create();
-        $model_key = array_rand(Equipamento::model);
-        $local_key = array_rand(Equipamento::local);
-        $position_key = array_rand(Equipamento::position);
-        $hostname = $faker->randomNumber($nbDigits = 9);
-
-        $equipamento = [  
-
-            'hostname'      => substr_replace($hostname, '.', 3, 0),
-            'model'         => Equipamento::model[$model_key],
-            'ip'            => $faker->ipv4(), 
-            'poe_type'      => 'no', 
-            'local'         => Equipamento::local[$local_key],
-            'position'      => Equipamento::position[$position_key],
-        ];
-        
-        Equipamento::create($equipamento);
-        Equipamento::factory(40)->create();
-        
+        Equipamento::factory(40)->create();       
     }
 }

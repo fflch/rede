@@ -15,14 +15,6 @@ class SnapshotSeeder extends Seeder
      */
     public function run()
     {
-    $status_key = array_rand(Snapshot::status);
-
-    $snapshot = [
-        'status'    => Snapshot::status[$status_key],
-        'porta_id'  => Porta::inRandomOrder()->pluck('id')->first(),
-    ];
-        
-    Snapshot::create($snapshot);
-    Snapshot::factory(40)->create();
+        Snapshot::factory(40)->create();
     }
 }
