@@ -14,4 +14,22 @@ class Equipamento extends Model
     {
         return $this->hasMany(Porta::class);
     }
+
+    const model = [
+        'hp_comware',
+        'alcatel_aos',
+    ];
+
+    const local = [
+        'adm',
+        'fcs',
+        'letras',
+        'gh',
+        'ccj'
+    ];
+
+    const position = [
+        'rack-A',
+        'rack-B',
+    ];
 }

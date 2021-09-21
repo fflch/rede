@@ -28,4 +28,9 @@ class Snapshot extends Model
             return  Carbon::parse($this->attributes['created_at'])->format('d/m/Y H:i');
         }
     }
+
+    const status = [
+        'up',
+        'down',
+    ];
 }
