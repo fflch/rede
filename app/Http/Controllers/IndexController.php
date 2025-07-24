@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Equipamento;
 use App\Models\Mac;
 use Uspdev\Utils\Generic;
+use App\Models\Predio;
 
 class IndexController extends Controller
 {
@@ -22,7 +22,7 @@ class IndexController extends Controller
         }
 
         return view('index',[
-           'locais' => Equipamento::all()->groupBy('local'), 
+           'predios' => Predio::all(), 
         ]);
     }
 }
