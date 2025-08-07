@@ -28,8 +28,10 @@ class SalaController extends Controller
 
     public function store(SalaRequest $request)
     {
+        //dd($request->validated() +  ['user_id' => auth()->user()->id]);
+
         Gate::authorize('admin');
-        Sala::create($request->validated());
+        Sala::create($request->validated() + ['user_id' => auth()->user()->id]);
         session()->flash('alert-success', 'Sala criada com sucesso!');
 
         return redirect("/predios/{$request->predio_id}");

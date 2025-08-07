@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('salas', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->foreignId('predio_id')->constrained()->onDelete('cascade');
+            $table->foreignId('predio_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }
