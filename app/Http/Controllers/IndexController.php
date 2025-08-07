@@ -7,11 +7,16 @@ use App\Models\Mac;
 use Uspdev\Utils\Generic;
 use App\Models\Predio;
 
+use Illuminate\Support\Facades\Gate;
+
 class IndexController extends Controller
 {
 
     public function index(Request $request){
 
+        //Gate::authorize('admin');
+
+        /*
         if(isset($request->search)) {
             $this->authorize('user');
             $mac = strtoupper($request->search);
@@ -20,9 +25,10 @@ class IndexController extends Controller
                 'macs' => $macs, 
             ]);
         }
+        */
 
-        return view('index',[
-           'predios' => Predio::all(), 
-        ]);
+        return view('index');
+
+
     }
 }

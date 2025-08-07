@@ -12,6 +12,7 @@ Route::get('/',[IndexController::class,'index']);
 Route::get('/equipamentos/{equipamento}',[EquipamentoController::class,'show']);
 
 // Prédios
+Route::get('/predios', [PredioController::class, 'index']);
 Route::get('/predios/create', [PredioController::class, 'create']);
 Route::post('/predios', [PredioController::class, 'store']);
 Route::get('/predios/{predio}', [PredioController::class, 'show']);

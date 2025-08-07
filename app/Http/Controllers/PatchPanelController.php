@@ -9,10 +9,13 @@ use App\Models\Sala;
 use App\Http\Requests\PatchPanelRequest;
 use App\Http\Requests\VincularPortaRequest;
 
+use Illuminate\Support\Facades\Gate;
+
 class PatchPanelController extends Controller
 {
     public function create(Request $request)
     {
+        Gate::authorize('admin');
         $racks = Rack::all();
         $rack_id = $request->input('rack_id');
         
@@ -24,6 +27,7 @@ class PatchPanelController extends Controller
 
     public function store(PatchPanelRequest $request)
     {
+        Gate::authorize('admin');
         $patchPanel = PatchPanel::create($request->validated());
         session()->flash('alert-success', 'Patch panel criado com sucesso!');
         return redirect("/racks/{$patchPanel->rack_id}");
@@ -31,6 +35,7 @@ class PatchPanelController extends Controller
 
     public function show(PatchPanel $patchPanel)
     {
+        Gate::authorize('admin');
         $salasPredio = Sala::where('predio_id', $patchPanel->rack->predio_id)->get();
 
         return view('patch-panels.show', [
@@ -42,6 +47,7 @@ class PatchPanelController extends Controller
 
     public function edit(PatchPanel $patchPanel)
     {
+        Gate::authorize('admin');
         $racks = Rack::all();
 
         return view('patch-panels.edit', [
@@ -52,22 +58,15 @@ class PatchPanelController extends Controller
 
     public function update(PatchPanelRequest $request, PatchPanel $patchPanel)
     {
+        Gate::authorize('admin');
         $patchPanel->update($request->validated());
         session()->flash('alert-success', 'Patch panel atualizado com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");
     }
 
-    public function destroy(PatchPanel $patchPanel)
-    {
-        $rack_id = $patchPanel->rack_id;
-        
-        $patchPanel->delete();
-        session()->flash('alert-success', 'Patch panel removido com sucesso!');
-        return redirect("/racks/{$rack_id}");
-    }
-
     public function selecionarSala(PatchPanel $patchPanel, Request $request)
     {
+        Gate::authorize('admin');
         $porta = $request->query('porta');
 
         $salasPredio = Sala::where('predio_id', $patchPanel->rack->predio_id)->get();
@@ -81,6 +80,7 @@ class PatchPanelController extends Controller
 
     public function vincularSala(VincularPortaRequest $request, PatchPanel $patchPanel)
     {
+        Gate::authorize('admin');
         $patchPanel->salas()->attach($request->sala_id, ['porta' => $request->porta]);
         session()->flash('alert-success', 'Porta vinculada com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");
@@ -88,10 +88,24 @@ class PatchPanelController extends Controller
 
     public function desvincularSala(PatchPanel $patchPanel, Sala $sala, Request $request)
     {
+        Gate::authorize('admin');
         $porta = $request->query('porta');
         
         $patchPanel->salas()->wherePivot('porta', $porta)->detach($sala->id);
         session()->flash('alert-success', 'Porta desvinculada com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");
+    }
+
+    public function destroy(PatchPanel $patchPanel)
+    {
+        Gate::authorize('admin');
+
+        if ($patchPanel->salasVinculadas->isEmpty()) {
+            $patchPanel->delete();
+            session()->flash('alert-success', 'Patch panel removido com sucesso');
+        } else {
+            session()->flash('alert-danger', 'Não foi possível deletar, pois existem portas vinculadas');
+        }
+        return back();
     }
 }

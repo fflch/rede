@@ -19,17 +19,4 @@ class Equipamento extends Model
         'hp_comware',
         'alcatel_aos',
     ];
-
-    const local = [
-        'adm',
-        'fcs',
-        'letras',
-        'gh',
-        'ccj'
-    ];
-
-    const position = [
-        'rack-A',
-        'rack-B',
-    ];
 }

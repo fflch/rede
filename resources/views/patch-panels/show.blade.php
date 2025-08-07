@@ -2,9 +2,6 @@
 
 @section('content')
 
-@can('user')
-@include('partials.search') 
-@endcan
 <br>
 
 <div class="card">

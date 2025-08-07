@@ -8,10 +8,13 @@ use App\Models\Predio;
 use App\Models\Equipamento;
 use App\Http\Requests\RackRequest;
 
+use Illuminate\Support\Facades\Gate;
+
 class RackController extends Controller
 {
     public function create(Request $request)
     {
+        Gate::authorize('admin');
         $predios = Predio::all();
         $predio_id = $request->input('predio_id');
         
@@ -23,6 +26,7 @@ class RackController extends Controller
     
     public function store(RackRequest $request)
     {
+        Gate::authorize('admin');
         Rack::create($request->validated());
         session()->flash('alert-success', 'Rack criado com sucesso!');
         
@@ -31,6 +35,7 @@ class RackController extends Controller
 
     public function show(Rack $rack)
     {
+        Gate::authorize('admin');
         return view('racks.show', [
             'rack' => $rack,
             'equipamentos' => $rack->equipamentos,
@@ -40,6 +45,7 @@ class RackController extends Controller
 
     public function edit(Rack $rack)
     {
+        Gate::authorize('admin');
         $predios = Predio::all();
 
         return view('racks.edit', [
@@ -50,6 +56,7 @@ class RackController extends Controller
 
     public function update(RackRequest $request, Rack $rack)
     {
+        Gate::authorize('admin');
         $rack->update($request->validated());
         session()->flash('alert-success', 'Rack atualizado com sucesso!');
 
@@ -58,18 +65,14 @@ class RackController extends Controller
 
     public function destroy(Rack $rack)
     {      
-        $predio_id = $rack->predio_id; // Guarda o ID antes de deletar
-        $equipamentos = Equipamento::select("id")->where("rack_id", $rack->id)->get();
+        Gate::authorize('admin');
 
-        if ($equipamentos->isNotEmpty()) {
-            session()->flash('alert-danger', 'Não foi possível deletar, existem equipamentos cadastrados neste rack');
-            
-            return redirect()->back();   
+        if ($rack->patchPanels->isEmpty()) {
+            $rack->delete();
+            session()->flash('alert-success', 'Rack deletado com sucesso');
+        } else {
+            session()->flash('alert-danger', 'Não foi possível deletar, pois existem patch panels cadastrados neste rack');
         }
-            
-        $rack->delete();
-        session()->flash('alert-success', 'Rack deletado com sucesso');
-
-        return redirect("/predios/{$predio_id}");
+        return redirect()->back();  
     }
 }
