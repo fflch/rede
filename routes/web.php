@@ -45,7 +45,6 @@ Route::delete('/patch-panels/{patchPanel}', [PatchPanelController::class, 'destr
 
 // Vincular portas de patch panels a salas
 Route::get('/patch-panels/{patchPanel}/selecionar-sala', [PatchPanelController::class, 'selecionarSala']);
-Route::get('/patch-panels/{patchPanel}/vincular-porta/{sala}', [PatchPanelController::class, 'vincularPorta']);
 Route::post('/patch-panels/{patchPanel}/vincular-sala', [PatchPanelController::class, 'vincularSala']);
 Route::delete('/patch-panels/{patchPanel}/desvincular-sala/{sala}', [PatchPanelController::class, 'desvincularSala']);
 
@@ -54,4 +53,3 @@ Route::get('/salas/{sala}/selecionar-rack', [SalaController::class, 'selecionarR
 Route::get('/salas/{sala}/selecionar-patchpanel/{rack}', [SalaController::class, 'selecionarPatchPanel']);
 Route::post('/salas/{sala}/vincular-patchpanel', [SalaController::class, 'vincularPatchPanel']);
 Route::delete('/salas/{sala}/desvincular-patchpanel/{patchPanel}', [SalaController::class, 'desvincularPatchPanel']);
-Route::delete('/patch-panels/{patchPanel}/desvincular-sala/{sala}', [PatchPanelController::class, 'desvincularSala']);

@@ -16,7 +16,7 @@ class PredioController extends Controller
     public function store(PredioRequest $request)
     {
         Predio::create($request->validated());
-
+        session()->flash('alert-success', 'Prédio criado com sucesso!');
         return redirect('/');
     }
 
@@ -37,14 +37,14 @@ class PredioController extends Controller
     public function update(PredioRequest $request, Predio $predio)
     {
         $predio->update($request->validated());
-
+        session()->flash('alert-success', 'Prédio atualizado com sucesso!');
         return redirect('/');
     }
 
     public function destroy(Predio $predio)
     {
         $predio->delete();
-        
+        session()->flash('alert-success', 'Prédio removido com sucesso!');
         return redirect('/');
     }
 }

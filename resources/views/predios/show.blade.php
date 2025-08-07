@@ -1,55 +1,73 @@
 @extends('main')
 
 @section('content')
+
+@can('user')
+@include('partials.search') 
+@endcan
+<br>
+
 <div class="card">
     <div class="card-header bg-usp">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="h4 mb-0 text-dark"> 
                 <i class="fas fa-building"></i> {{ $predio->nome }}
             </h1>
-            @can('user')
-            <div class="btn-group">
-                <a href="/predios/{{ $predio->id }}/edit" class="btn btn-warning">
-                    <i class="fas fa-edit"></i> Editar 
-                </a>
-                <form action="/predios/{{ $predio->id }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este prédio?')">
-                        <i class="fas fa-trash"></i> Excluir
-                    </button>
-                </form>
-            </div>
-            @endcan
+            <a href="/" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
         </div>
     </div>
+    
     <div class="card-body">
         @if($predio->descricao)
-        <p class="mb-4">{{ $predio->descricao }}</p>
+        <p><strong>Descrição:</strong> {{ $predio->descricao }}</p>
         @endif
 
-        <div class="row">
+        <div class="row mt-4">
             <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0">Racks</h2>
+                        <h2 class="h5 mb-0">Salas</h2>
                         @can('user')
-                        <a href="/racks/create?predio_id={{ $predio->id }}" class="btn btn-sm btn-success">
-                            <i class="fas fa-plus"></i> Novo Rack
-                        </a>
+                        <div>
+                            <a href="/salas/create?predio_id={{ $predio->id }}" class="btn btn-success btn-sm ml-2">
+                                <i class="fas fa-plus"></i> Nova Sala
+                            </a>
+                        </div>
                         @endcan
                     </div>
-                    
                     <div class="card-body">
-                        @if($racks->isEmpty())
-                            <div class="alert alert-info">Nenhum rack cadastrado.</div>
+                        @if($salas->isEmpty())
+                            <div class="alert alert-info">Nenhuma sala cadastrada.</div>
                         @else
-                            <div class="list-group">
-                                @foreach($racks as $rack)
-                                <a href="/racks/{{ $rack->id }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                    {{ $rack->nome }}
-                                </a>
-                                @endforeach
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th width="220px">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($salas as $sala)
+                                        <tr>
+                                            <td>{{ $sala->nome }}</td>
+                                            <td>
+                                                <a href="/salas/{{ $sala->id }}" class="btn btn-info btn-sm">Ver</a>
+                                                <a href="/salas/{{ $sala->id }}/edit" class="btn btn-warning btn-sm">Editar</a>
+                                                <form action="/salas/{{ $sala->id }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta sala?')">
+                                                        Excluir
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         @endif
                     </div>
@@ -59,32 +77,50 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0">Salas</h2>
+                        <h2 class="h5 mb-0">Racks</h2>
                         @can('user')
-                        <a href="/salas/create?predio_id={{ $predio->id }}" class="btn btn-sm btn-success">
-                            <i class="fas fa-plus"></i> Nova Sala
-                        </a>
+                        <div>
+                            <a href="/racks/create?predio_id={{ $predio->id }}" class="btn btn-success btn-sm ml-2">
+                                <i class="fas fa-plus"></i> Novo Rack
+                            </a>
+                        </div>
                         @endcan
                     </div>
                     <div class="card-body">
-                        @if($salas->isEmpty())
-                            <div class="alert alert-info">Nenhuma sala cadastrada.</div>
+                        @if($racks->isEmpty())
+                            <div class="alert alert-info">Nenhum rack cadastrado.</div>
                         @else
-                            <div class="list-group">
-                                @foreach($salas as $sala)
-                                <a href="/salas/{{ $sala->id }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                    {{ $sala->nome }}
-                                </a>
-                                @endforeach
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th width="220px">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($racks as $rack)
+                                        <tr>
+                                            <td>{{ $rack->nome }}</td>
+                                            <td>
+                                                <a href="/racks/{{ $rack->id }}" class="btn btn-info btn-sm">Ver</a>
+                                                <a href="/racks/{{ $rack->id }}/edit" class="btn btn-warning btn-sm">Editar</a>
+                                                <form action="/racks/{{ $rack->id }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este rack?')">
+                                                        Excluir
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         @endif
                     </div>
                 </div>
-            </div>            
-            <div class="mt-3">
-                <a href="/" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Voltar
-                </a>
             </div>
         </div>
     </div>

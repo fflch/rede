@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('predios', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            $table->text('descricao')->nullable();
+            $table->string('nome')->unique();
+            $table->string('descricao')->nullable();
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Rack;
 use App\Models\Predio;
+use App\Models\Equipamento;
 use App\Http\Requests\RackRequest;
 
 class RackController extends Controller
@@ -23,7 +24,8 @@ class RackController extends Controller
     public function store(RackRequest $request)
     {
         Rack::create($request->validated());
-
+        session()->flash('alert-success', 'Rack criado com sucesso!');
+        
         return redirect("/predios/{$request->predio_id}");
     }
 
@@ -49,14 +51,24 @@ class RackController extends Controller
     public function update(RackRequest $request, Rack $rack)
     {
         $rack->update($request->validated());
+        session()->flash('alert-success', 'Rack atualizado com sucesso!');
 
         return redirect("/racks/{$rack->id}");
     }
 
     public function destroy(Rack $rack)
-    {
+    {      
         $predio_id = $rack->predio_id; // Guarda o ID antes de deletar
+        $equipamentos = Equipamento::select("id")->where("rack_id", $rack->id)->get();
+
+        if ($equipamentos->isNotEmpty()) {
+            session()->flash('alert-danger', 'Não foi possível deletar, existem equipamentos cadastrados neste rack');
+            
+            return redirect()->back();   
+        }
+            
         $rack->delete();
+        session()->flash('alert-success', 'Rack deletado com sucesso');
 
         return redirect("/predios/{$predio_id}");
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PredioRequest extends FormRequest
 {
@@ -21,14 +22,17 @@ class PredioRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'nome' => 'required|string|max:255|unique:predios,nome',
+        $rules = [
+            'nome' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('predios')->ignore($this->predio->id ?? null)->where(function ($query) {
+                    return $query->whereRaw('LOWER(nome) = ?', [strtolower($this->nome)]);
+                })
+            ],
             'descricao' => 'nullable|string'
         ];
-
-    if ($this->method() == 'PUT' || $this->method() == 'PATCH') {
-            $rules['nome'] = 'required|string|max:255|unique:predios,nome,'.$this->predio->id;
-        }
 
         return $rules;
     }

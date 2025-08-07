@@ -12,29 +12,82 @@
         @if($patchPanels->isEmpty())
             <div class="alert alert-info">Nenhum patch panel disponível neste rack.</div>
         @else
-            <form action="/salas/{{ $sala->id }}/vincular-patchpanel" method="POST">
-                @csrf
-                <input type="hidden" name="rack_id" value="{{ $rack->id }}">
-                
-                <div class="form-group">
-                    <label>Patch Panel</label>
-                    <select name="patch_panel_id" class="form-control" required>
-                        @foreach($patchPanels as $pp)
-                            <option value="{{ $pp->id }}">{{ $pp->nome }}</option>
-                        @endforeach
-                    </select>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Selecione um Patch Panel</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                @foreach($patchPanels as $pp)
+                                    <a href="/salas/{{ $sala->id }}/selecionar-patchpanel/{{ $rack->id }}?patch_panel_id={{ $pp->id }}" 
+                                       class="list-group-item list-group-item-action {{ request('patch_panel_id') == $pp->id ? 'active' : '' }}">
+                                        {{ $pp->nome }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label>Número da Porta</label>
-                    <input type="number" name="porta" class="form-control" min="1" required>
-                </div>
-                
-                <div class="d-flex justify-content-between">
-                    <a href="/salas/{{ $sala->id }}/selecionar-rack" class="btn btn-secondary">Voltar</a>
-                    <button type="submit" class="btn btn-primary">Vincular</button>
-                </div>
-            </form>
+                @if(request('patch_panel_id'))
+                    @php
+                        $selectedPP = $patchPanels->firstWhere('id', request('patch_panel_id'));
+                        $portasOcupadas = $selectedPP->salasVinculadas->pluck('pivot.porta')->toArray();
+                        $portasDisponiveis = array_diff(range(1, $selectedPP->qtde_portas), $portasOcupadas);
+                    @endphp
+                    <div class="col-md-8">
+                        <form action="/salas/{{ $sala->id }}/vincular-patchpanel" method="POST">
+                            @csrf
+                            <input type="hidden" name="rack_id" value="{{ $rack->id }}">
+                            <input type="hidden" name="patch_panel_id" value="{{ $selectedPP->id }}">
+                            
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Portas do Patch Panel: {{ $selectedPP->nome }}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Selecione as Portas</label>
+                                        <div class="row">
+                                            @foreach(range(1, $selectedPP->qtde_portas) as $i)
+                                                <div class="col-md-3 col-sm-4 col-6 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                            name="portas[]" 
+                                                            id="porta-{{ $i }}" 
+                                                            value="{{ $i }}"
+                                                            {{ in_array($i, $portasOcupadas) ? 'disabled' : '' }}>
+                                                        <label class="form-check-label" for="porta-{{ $i }}">
+                                                            Porta {{ $i }}
+                                                            @if(in_array($i, $portasOcupadas))
+                                                                <small class="text-danger">(Ocupada)</small>
+                                                            @endif
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light">
+                                    <div class="d-flex justify-content-between">
+                                        <a href="/salas/{{ $sala->id }}/selecionar-rack" class="btn btn-secondary">Voltar</a>
+                                        <button type="submit" class="btn btn-primary">Vincular Portas Selecionadas</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                @else
+                    <div class="col-md-8">
+                        <div class="alert alert-info">
+                            Selecione um Patch Panel à esquerda para visualizar suas portas.
+                        </div>
+                    </div>
+                @endif
+            </div>
         @endif
     </div>
 </div>

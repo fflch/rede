@@ -23,7 +23,7 @@
             
             <div class="mb-3">
                 <label for="nome" class="form-label">Identificação do Rack *</label>
-                <input type="text" class="form-control" id="nome" name="nome" value="{{ $rack->nome }}" required>
+                <input type="text" class="form-control" id="nome" name="nome" value="{{ $rack->nome }}">
             </div>
             
             <div class="d-flex justify-content-between">
