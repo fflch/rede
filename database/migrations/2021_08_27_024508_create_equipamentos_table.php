@@ -20,13 +20,10 @@ class CreateEquipamentosTable extends Migration
             $table->string('model');
             $table->string('ip');
             $table->string('poe_type');
-            $table->string('local');
-            $table->string('position');
+            $table->integer('qtde_portas');
 
-            $table->string('uplink_extra_ports')->nullable();
-            $table->string('rep_ports')->nullable();
-            $table->string('printer_ports')->nullable();
-            $table->string('ignore_ports')->nullable();
+            $table->foreignId('predio_id')->nullable()->constrained();
+            $table->foreignId('rack_id')->nullable()->constrained();
 
         });
     }
