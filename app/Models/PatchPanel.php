@@ -17,4 +17,18 @@ class PatchPanel extends Model
     {
         return $this->belongsToMany(Sala::class)->withPivot('porta');
     }
+
+    public function salasVinculadas()
+    {
+        return $this->belongsToMany(Sala::class, 'patch_panel_sala', 'patch_panel_id', 'sala_id')
+                    ->withPivot('porta')
+                    ->withTimestamps();
+    }
+
+    public function getVinculoPorPorta($porta)
+    {
+        return $this->salasVinculadas()
+                ->wherePivot('porta', $porta)
+                ->first();
+    }
 }

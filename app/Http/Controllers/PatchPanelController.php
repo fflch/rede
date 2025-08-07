@@ -25,7 +25,7 @@ class PatchPanelController extends Controller
     public function store(PatchPanelRequest $request)
     {
         $patchPanel = PatchPanel::create($request->validated());
-
+        session()->flash('alert-success', 'Patch panel criado com sucesso!');
         return redirect("/racks/{$patchPanel->rack_id}");
     }
 
@@ -53,64 +53,45 @@ class PatchPanelController extends Controller
     public function update(PatchPanelRequest $request, PatchPanel $patchPanel)
     {
         $patchPanel->update($request->validated());
-
+        session()->flash('alert-success', 'Patch panel atualizado com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");
     }
 
     public function destroy(PatchPanel $patchPanel)
     {
         $rack_id = $patchPanel->rack_id;
+        
         $patchPanel->delete();
-
+        session()->flash('alert-success', 'Patch panel removido com sucesso!');
         return redirect("/racks/{$rack_id}");
     }
 
-    public function selecionarSala(PatchPanel $patchPanel)
+    public function selecionarSala(PatchPanel $patchPanel, Request $request)
     {
+        $porta = $request->query('porta');
+
         $salasPredio = Sala::where('predio_id', $patchPanel->rack->predio_id)->get();
         
         return view('patch-panels.selecionar-sala', [
             'patchPanel' => $patchPanel,
-            'salasPredio' => $salasPredio
-        ]);
-    }
-
-    public function vincularPorta(PatchPanel $patchPanel, Sala $sala)
-    {
-        // Verifica se a sala pertence ao mesmo prédio
-        if ($sala->predio_id != $patchPanel->rack->predio_id) {
-            return redirect("/patch-panels/{$patchPanel->id}")->with('error', 'Sala não pertence a este prédio');
-        }
-
-        return view('patch-panels.vincular-porta', [
-            'patchPanel' => $patchPanel,
-            'sala' => $sala
+            'salasPredio' => $salasPredio,
+            'porta' => $porta
         ]);
     }
 
     public function vincularSala(VincularPortaRequest $request, PatchPanel $patchPanel)
     {
-        // Verifica se a porta já está em uso
-        if ($patchPanel->salas()->wherePivot('porta', $request->porta)->exists()) {
-            return back()->withErrors(['porta' => 'Esta porta já está vinculada']);
-        }
-
         $patchPanel->salas()->attach($request->sala_id, ['porta' => $request->porta]);
-        return redirect("/patch-panels/{$patchPanel->id}")->with('success', 'Porta vinculada com sucesso!');
+        session()->flash('alert-success', 'Porta vinculada com sucesso!');
+        return redirect("/patch-panels/{$patchPanel->id}");
     }
 
     public function desvincularSala(PatchPanel $patchPanel, Sala $sala, Request $request)
     {
-        // Obter o número da porta da query string
         $porta = $request->query('porta');
         
-        if (!$porta) {
-            return redirect("/patch-panels/{$patchPanel->id}")->with('error', 'Número da porta não especificado');
-        }
-
-        // Remover apenas a vinculação específica (sala + porta)
         $patchPanel->salas()->wherePivot('porta', $porta)->detach($sala->id);
-        
-        return redirect("/patch-panels/{$patchPanel->id}")->with('success', 'Porta desvinculada com sucesso!');
+        session()->flash('alert-success', 'Porta desvinculada com sucesso!');
+        return redirect("/patch-panels/{$patchPanel->id}");
     }
 }

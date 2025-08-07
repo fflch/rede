@@ -24,7 +24,7 @@
             
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome/Número da Sala *</label>
-                <input type="text" class="form-control" id="nome" name="nome" value="{{ old('nome') }}" required>
+                <input type="text" class="form-control" id="nome" name="nome" value="{{ old('nome') }}">
             </div>
             
             <div class="d-flex justify-content-between">

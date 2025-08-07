@@ -1,6 +1,12 @@
 @extends('main')
 
 @section('content')
+
+@can('user')
+@include('partials.search') 
+@endcan
+<br>
+
 <div class="card">
     <div class="card-header bg-usp">
         <div class="d-flex justify-content-between align-items-center">
@@ -8,20 +14,9 @@
                 <i class="fas fa-door-open"></i> Sala: {{ $sala->nome }}
                 <small class="text-muted d-block">{{ $sala->predio->nome }}</small>
             </h1>
-            @can('user')
-            <div class="btn-group">
-                <a href="/salas/{{ $sala->id }}/edit" class="btn btn-warning">
-                    <i class="fas fa-edit"></i> Editar
-                </a>
-                <form action="/salas/{{ $sala->id }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta sala?')">
-                        <i class="fas fa-trash"></i> Excluir
-                    </button>
-                </form>
-            </div>
-            @endcan
+            <a href="/predios/{{ $sala->predio->id }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
         </div>
     </div>
     <div class="card-body">
@@ -71,12 +66,12 @@
                     </tbody>
                 </table>
             </div>
+            
+            <div class="d-flex justify-content-center">
+                {{ $patchPanels->links() }}
+            </div>
         @endif
     </div>
 </div>
-<div class="mt-3">
-    <a href="/predios/{{ $sala->predio->id }}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Voltar
-    </a>
-</div>
+
 @endsection

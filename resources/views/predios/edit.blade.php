@@ -12,7 +12,7 @@
             
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome do Prédio *</label>
-                <input type="text" class="form-control" id="nome" name="nome" value="{{ $predio->nome }}" required>
+                <input type="text" class="form-control" id="nome" name="nome" value="{{ $predio->nome }}">
             </div>
             
             <div class="mb-3">

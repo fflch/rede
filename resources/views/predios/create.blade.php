@@ -11,7 +11,7 @@
             
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome do Prédio *</label>
-                <input type="text" class="form-control" id="nome" name="nome" value="{{ old('nome') }}" required>
+                <input type="text" class="form-control" id="nome" name="nome" value="{{ old('nome') }}">
             </div>
             
             <div class="mb-3">

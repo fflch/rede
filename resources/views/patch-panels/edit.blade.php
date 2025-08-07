@@ -23,12 +23,12 @@
             
             <div class="mb-3">
                 <label for="nome" class="form-label">Identificação *</label>
-                <input type="text" class="form-control" id="nome" name="nome" value="{{ $patchPanel->nome }}" required>
+                <input type="text" class="form-control" id="nome" name="nome" value="{{ $patchPanel->nome }}">
             </div>
             
             <div class="mb-3">
                 <label for="qtde_portas" class="form-label">Quantidade de Portas *</label>
-                <input type="number" class="form-control" id="qtde_portas" name="qtde_portas" min="1" value="{{ $patchPanel->qtde_portas }}" required>
+                <input type="number" class="form-control" id="qtde_portas" name="qtde_portas" min="1" value="{{ $patchPanel->qtde_portas }}">
             </div>
             
             <div class="d-flex justify-content-between">
