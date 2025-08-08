@@ -27,7 +27,7 @@ class RackController extends Controller
     public function store(RackRequest $request)
     {
         Gate::authorize('admin');
-        Rack::create($request->validated());
+        Rack::create($request->validated() + ['user_id' => auth()->user()->id]);
         session()->flash('alert-success', 'Rack criado com sucesso!');
         
         return redirect("/predios/{$request->predio_id}");
@@ -57,7 +57,7 @@ class RackController extends Controller
     public function update(RackRequest $request, Rack $rack)
     {
         Gate::authorize('admin');
-        $rack->update($request->validated());
+        $rack->update($request->validated() + ['updated_by' => auth()->id()]);
         session()->flash('alert-success', 'Rack atualizado com sucesso!');
 
         return redirect("/racks/{$rack->id}");
@@ -68,7 +68,15 @@ class RackController extends Controller
         Gate::authorize('admin');
 
         if ($rack->patchPanels->isEmpty()) {
+            \DB::transaction(function () use ($rack) {
+            // Preenche quem deletou ANTES de deletar
+            $rack->deleted_by = auth()->id();
+            $rack->save();
             $rack->delete();
+        });
+            
+        $racksDeletados = Rack::withTrashed()->get();
+
             session()->flash('alert-success', 'Rack deletado com sucesso');
         } else {
             session()->flash('alert-danger', 'Não foi possível deletar, pois existem patch panels cadastrados neste rack');

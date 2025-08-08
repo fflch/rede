@@ -3,10 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PatchPanel extends Model
 {
-    protected $fillable = ['nome', 'rack_id', 'qtde_portas'];
+    use SoftDeletes;
+    
+    protected $fillable = ['nome', 'rack_id', 'qtde_portas', 'user_id', 'updated_by', 'deleted_by'];
+    protected $dates = ['deleted_at'];
+
+    public function criador()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deletador()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
 
     public function rack()
     {
@@ -30,5 +49,10 @@ class PatchPanel extends Model
         return $this->salasVinculadas()
                 ->wherePivot('porta', $porta)
                 ->first();
+    }
+
+    public function scopeWithTrashed($query)
+    {
+        return $query->whereNotNull('deleted_at');
     }
 }

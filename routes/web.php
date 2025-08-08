@@ -54,3 +54,12 @@ Route::get('/salas/{sala}/selecionar-rack', [SalaController::class, 'selecionarR
 Route::get('/salas/{sala}/selecionar-patchpanel/{rack}', [SalaController::class, 'selecionarPatchPanel']);
 Route::post('/salas/{sala}/vincular-patchpanel', [SalaController::class, 'vincularPatchPanel']);
 Route::delete('/salas/{sala}/desvincular-patchpanel/{patchPanel}', [SalaController::class, 'desvincularPatchPanel']);
+
+Route::get('/debug', function() {
+    dd(
+        auth()->user()->name,
+        auth()->user()->codpes,
+        Gate::allows('admin'), // Verifica se é admin
+        Gate::allows('user')   // Verifica se é usuário comum
+    );
+});
