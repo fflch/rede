@@ -69,7 +69,7 @@ class SalaController extends Controller
     public function update(SalaRequest $request, Sala $sala)
     {
         Gate::authorize('admin');
-        $sala->update($request->validated());
+        $sala->update($request->validated() + ['updated_by' => auth()->id()]);
         session()->flash('alert-success', 'Sala atualizada com sucesso!');
 
         return redirect("/salas/{$sala->id}");
@@ -108,48 +108,29 @@ class SalaController extends Controller
     {
         Gate::authorize('admin');
 
-        \DB::beginTransaction();
-
-        $rack = Rack::findOrFail($request->rack_id);
         $patchPanel = PatchPanel::findOrFail($request->patch_panel_id);
+        $portas = array_map('intval', $request->portas ?? []); // Garante que são inteiros
 
-        $portas = $request->portas ?? [];
-        $vinculos = [];
+        // Filtra portas já ocupadas
+        $portasOcupadas = $patchPanel->salasVinculadas()
+            ->whereIn('porta', $portas)
+            ->pluck('porta')
+            ->toArray();
 
-        foreach ($portas as $porta) {
-            $porta = (int) $porta; // Garante que é inteiro
+        $portasDisponiveis = array_diff($portas, $portasOcupadas);
 
-            // Verifica se a porta já está em uso
-            $existeVinculo = \DB::table('patch_panel_sala')
-                ->where('patch_panel_id', $patchPanel->id)
-                ->where('porta', $porta)
-                ->exists();
-
-            if (!$existeVinculo) {
-                $vinculos[] = [
-                    'porta' => $porta,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            }
+        // Vincula as portas disponíveis
+        foreach ($portasDisponiveis as $porta) {
+            $sala->patchPanels()->attach($patchPanel->id, [
+                'porta' => $porta,
+                'user_id' => auth()->id(), // Registra quem vinculou
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
         }
 
-        if (!empty($vinculos)) {
-            // Insere diretamente na tabela pivot
-            \DB::table('patch_panel_sala')->insert(
-                array_map(function($item) use ($patchPanel, $sala) {
-                    return array_merge($item, [
-                        'patch_panel_id' => $patchPanel->id,
-                        'sala_id' => $sala->id
-                    ]);
-                }, $vinculos)
-            );
-
-            \DB::commit();
-            session()->flash('alert-success', 'Portas vinculadas com sucesso!');
-            
-            return redirect("/salas/{$sala->id}");
-        }
+        session()->flash('alert-success', 'Portas vinculadas com sucesso!');
+        return redirect("/salas/{$sala->id}");
     }
 
     public function desvincularPatchPanel(Sala $sala, PatchPanel $patchPanel, Request $request)
@@ -174,7 +155,15 @@ class SalaController extends Controller
         Gate::authorize('admin');
 
         if($sala->patchPanels->isEmpty()){
+            \DB::transaction(function () use ($sala) {
+            // Preenche quem deletou ANTES de deletar
+            $sala->deleted_by = auth()->id();
+            $sala->save();
             $sala->delete();
+        });
+
+        $salasDeletadas = Sala::withTrashed()->get();
+
             session()->flash('alert-success', 'Sala removida com sucesso!');
         } else {
             session()->flash('alert-danger', 'Sala não pode ser removida, pois possui portas vinculadas');

@@ -28,7 +28,7 @@ class PatchPanelController extends Controller
     public function store(PatchPanelRequest $request)
     {
         Gate::authorize('admin');
-        $patchPanel = PatchPanel::create($request->validated());
+        $patchPanel = PatchPanel::create($request->validated() + ['user_id' => auth()->user()->id]);
         session()->flash('alert-success', 'Patch panel criado com sucesso!');
         return redirect("/racks/{$patchPanel->rack_id}");
     }
@@ -59,7 +59,7 @@ class PatchPanelController extends Controller
     public function update(PatchPanelRequest $request, PatchPanel $patchPanel)
     {
         Gate::authorize('admin');
-        $patchPanel->update($request->validated());
+        $patchPanel->update($request->validated() + ['updated_by' => auth()->id()]);
         session()->flash('alert-success', 'Patch panel atualizado com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");
     }
@@ -101,7 +101,15 @@ class PatchPanelController extends Controller
         Gate::authorize('admin');
 
         if ($patchPanel->salasVinculadas->isEmpty()) {
+            \DB::transaction(function () use ($patchPanel) {
+            // Preenche quem deletou ANTES de deletar
+            $patchPanel->deleted_by = auth()->id();
+            $patchPanel->save();
             $patchPanel->delete();
+        });
+            
+        $patchPanelsDeletados = PatchPanel::withTrashed()->get();
+
             session()->flash('alert-success', 'Patch panel removido com sucesso');
         } else {
             session()->flash('alert-danger', 'Não foi possível deletar, pois existem portas vinculadas');

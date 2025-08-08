@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('nome')->unique();
             $table->string('descricao')->nullable();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('updated_by')->nullable()->constrained('users');
+            $table->foreignId('deleted_by')->nullable()->constrained('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

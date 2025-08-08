@@ -27,7 +27,7 @@ class PredioController extends Controller
     public function store(PredioRequest $request)
     {
         Gate::authorize('admin');
-        Predio::create($request->validated());
+        Predio::create($request->validated() + ['user_id' => auth()->user()->id]);
         session()->flash('alert-success', 'Prédio criado com sucesso!');
         return redirect('/predios');
     }
@@ -51,7 +51,7 @@ class PredioController extends Controller
     public function update(PredioRequest $request, Predio $predio)
     {
         Gate::authorize('admin');
-        $predio->update($request->validated());
+        $predio->update($request->validated() + ['updated_by' => auth()->id()]);
         session()->flash('alert-success', 'Prédio atualizado com sucesso!');
         return redirect('/predios');
     }
@@ -60,7 +60,15 @@ class PredioController extends Controller
     {
         Gate::authorize('admin');
         if($predio->salas->isEmpty() && $predio->racks->isEmpty()) {
+            \DB::transaction(function () use ($predio) {
+            // Preenche quem deletou ANTES de deletar
+            $predio->deleted_by = auth()->id();
+            $predio->save();
             $predio->delete();
+        });
+            
+        $prediosDeletados = Predio::withTrashed()->get();
+
         } else {
             session()->flash('alert-danger', 'Prédio não deletado, pois possui salas ou racks cadastrados!');
         }      

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc2e267a3da535ec636ec54f11cca285",
+    "content-hash": "63e0eb46eb4402f16dc88db3c4f8dd18",
     "packages": [
         {
             "name": "brick/math",
@@ -6472,16 +6472,16 @@
         },
         {
             "name": "uspdev/senhaunica-socialite",
-            "version": "4.3.18",
+            "version": "4.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/uspdev/senhaunica-socialite.git",
-                "reference": "f4db8f92dd26d3c718ae8a8804e10407b2505891"
+                "reference": "039f62eed87b667861e52bb5b22406c607bd5b40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/uspdev/senhaunica-socialite/zipball/f4db8f92dd26d3c718ae8a8804e10407b2505891",
-                "reference": "f4db8f92dd26d3c718ae8a8804e10407b2505891",
+                "url": "https://api.github.com/repos/uspdev/senhaunica-socialite/zipball/039f62eed87b667861e52bb5b22406c607bd5b40",
+                "reference": "039f62eed87b667861e52bb5b22406c607bd5b40",
                 "shasum": ""
             },
             "require": {
@@ -6523,9 +6523,9 @@
             "homepage": "https://github.com/uspdev/senhaunica-socialite",
             "support": {
                 "issues": "https://github.com/uspdev/senhaunica-socialite/issues",
-                "source": "https://github.com/uspdev/senhaunica-socialite/tree/4.3.18"
+                "source": "https://github.com/uspdev/senhaunica-socialite/tree/4.5.1"
             },
-            "time": "2025-04-08T14:01:14+00:00"
+            "time": "2025-08-04T18:55:12+00:00"
         },
         {
             "name": "uspdev/utils",
