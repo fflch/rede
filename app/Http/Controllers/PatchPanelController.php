@@ -8,7 +8,6 @@ use App\Models\Rack;
 use App\Models\Sala;
 use App\Http\Requests\PatchPanelRequest;
 use App\Http\Requests\VincularPortaRequest;
-
 use Illuminate\Support\Facades\Gate;
 
 class PatchPanelController extends Controller
@@ -28,7 +27,7 @@ class PatchPanelController extends Controller
     public function store(PatchPanelRequest $request)
     {
         Gate::authorize('admin');
-        $patchPanel = PatchPanel::create($request->validated() + ['user_id' => auth()->user()->id]);
+        $patchPanel = PatchPanel::create($request->validated() + ['user_id' => auth()->id()]);
         session()->flash('alert-success', 'Patch panel criado com sucesso!');
         return redirect("/racks/{$patchPanel->rack_id}");
     }
@@ -101,15 +100,7 @@ class PatchPanelController extends Controller
         Gate::authorize('admin');
 
         if ($patchPanel->salasVinculadas->isEmpty()) {
-            \DB::transaction(function () use ($patchPanel) {
-            // Preenche quem deletou ANTES de deletar
-            $patchPanel->deleted_by = auth()->id();
-            $patchPanel->save();
             $patchPanel->delete();
-        });
-            
-        $patchPanelsDeletados = PatchPanel::withTrashed()->get();
-
             session()->flash('alert-success', 'Patch panel removido com sucesso');
         } else {
             session()->flash('alert-danger', 'Não foi possível deletar, pois existem portas vinculadas');

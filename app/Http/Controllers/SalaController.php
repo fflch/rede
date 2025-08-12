@@ -9,7 +9,6 @@ use App\Models\PatchPanel;
 use App\Models\Rack;
 use App\Http\Requests\SalaRequest;
 use App\Http\Requests\VincularPortaRequest;
-
 use Illuminate\Support\Facades\Gate;
 
 class SalaController extends Controller
@@ -28,10 +27,8 @@ class SalaController extends Controller
 
     public function store(SalaRequest $request)
     {
-        //dd($request->validated() +  ['user_id' => auth()->user()->id]);
-
         Gate::authorize('admin');
-        Sala::create($request->validated() + ['user_id' => auth()->user()->id]);
+        Sala::create($request->validated() + ['user_id' => auth()->id()]);
         session()->flash('alert-success', 'Sala criada com sucesso!');
 
         return redirect("/predios/{$request->predio_id}");
@@ -41,10 +38,10 @@ class SalaController extends Controller
     {
         Gate::authorize('admin');
         $patchPanelsVinculados = $sala->patchPanels()
-        ->withPivot('porta')
-        ->orderBy('patch_panels.nome') 
-        ->orderBy('porta', 'asc') 
-        ->paginate(10);
+            ->withPivot('porta')
+            ->orderBy('patch_panels.nome') 
+            ->orderBy('porta', 'asc') 
+            ->paginate(10);
 
         $racks = $sala->predio->racks;
 
@@ -89,7 +86,6 @@ class SalaController extends Controller
     public function selecionarPatchPanel(Sala $sala, Rack $rack, Request $request)
     {
         Gate::authorize('admin');
-        // Busca todos os patch panels do rack com contagem de portas ocupadas
         $patchPanelsDisponiveis = $rack->patchPanels()
             ->withCount(['salasVinculadas as portas_ocupadas' => function($query) {
                 $query->select(\DB::raw('count(distinct porta)'));
@@ -109,9 +105,8 @@ class SalaController extends Controller
         Gate::authorize('admin');
 
         $patchPanel = PatchPanel::findOrFail($request->patch_panel_id);
-        $portas = array_map('intval', $request->portas ?? []); // Garante que são inteiros
+        $portas = array_map('intval', $request->portas ?? []);
 
-        // Filtra portas já ocupadas
         $portasOcupadas = $patchPanel->salasVinculadas()
             ->whereIn('porta', $portas)
             ->pluck('porta')
@@ -119,11 +114,10 @@ class SalaController extends Controller
 
         $portasDisponiveis = array_diff($portas, $portasOcupadas);
 
-        // Vincula as portas disponíveis
         foreach ($portasDisponiveis as $porta) {
             $sala->patchPanels()->attach($patchPanel->id, [
                 'porta' => $porta,
-                'user_id' => auth()->id(), // Registra quem vinculou
+                'user_id' => auth()->id(),
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
@@ -136,10 +130,8 @@ class SalaController extends Controller
     public function desvincularPatchPanel(Sala $sala, PatchPanel $patchPanel, Request $request)
     {
         Gate::authorize('admin');
-        // Obter o número da porta da query string
         $porta = $request->query('porta');
         
-        // Remover apenas a vinculação específica (patch panel + porta)
         $sala->patchPanels()
             ->wherePivot('porta', $porta)
             ->where('patch_panel_id', $patchPanel->id)
@@ -155,15 +147,7 @@ class SalaController extends Controller
         Gate::authorize('admin');
 
         if($sala->patchPanels->isEmpty()){
-            \DB::transaction(function () use ($sala) {
-            // Preenche quem deletou ANTES de deletar
-            $sala->deleted_by = auth()->id();
-            $sala->save();
             $sala->delete();
-        });
-
-        $salasDeletadas = Sala::withTrashed()->get();
-
             session()->flash('alert-success', 'Sala removida com sucesso!');
         } else {
             session()->flash('alert-danger', 'Sala não pode ser removida, pois possui portas vinculadas');

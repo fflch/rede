@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Rack extends Model
 {
-    use SoftDeletes;
-    
-    protected $fillable = ['nome', 'predio_id', 'user_id', 'updated_by', 'deleted_by'];
-    protected $dates = ['deleted_at'];
+    protected $fillable = [
+        'nome', 'predio_id', 'user_id', 'updated_by'
+    ];
 
     public function criador()
     {
@@ -20,11 +18,6 @@ class Rack extends Model
     public function editor()
     {
         return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    public function deletador()
-    {
-        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     public function predio()
@@ -40,10 +33,5 @@ class Rack extends Model
     public function equipamentos()
     {
         return $this->hasMany(Equipamento::class);
-    }
-
-        public function scopeWithTrashed($query)
-    {
-        return $query->whereNotNull('deleted_at');
     }
 }
