@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('patch_panels', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->foreignId('rack_id')->constrained()->onDelete('cascade');
+            $table->foreignId('rack_id')->constrained();
             $table->integer('qtde_portas');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }

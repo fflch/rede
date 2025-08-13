@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rack extends Model
 {
-    protected $fillable = ['nome', 'predio_id'];
+    protected $fillable = [
+        'nome',
+        'predio_id',
+        'user_id',
+    ];
 
     public function predio()
     {

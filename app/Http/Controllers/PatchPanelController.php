@@ -8,7 +8,6 @@ use App\Models\Rack;
 use App\Models\Sala;
 use App\Http\Requests\PatchPanelRequest;
 use App\Http\Requests\VincularPortaRequest;
-
 use Illuminate\Support\Facades\Gate;
 
 class PatchPanelController extends Controller
@@ -18,7 +17,7 @@ class PatchPanelController extends Controller
         Gate::authorize('admin');
         $racks = Rack::all();
         $rack_id = $request->input('rack_id');
-        
+
         return view('patch-panels.create', [
             'racks' => $racks,
             'rack_selecionado' => $rack_id
@@ -28,7 +27,7 @@ class PatchPanelController extends Controller
     public function store(PatchPanelRequest $request)
     {
         Gate::authorize('admin');
-        $patchPanel = PatchPanel::create($request->validated());
+        $patchPanel = PatchPanel::create($request->validated() + ['user_id' => auth()->id()]);
         session()->flash('alert-success', 'Patch panel criado com sucesso!');
         return redirect("/racks/{$patchPanel->rack_id}");
     }
@@ -59,7 +58,7 @@ class PatchPanelController extends Controller
     public function update(PatchPanelRequest $request, PatchPanel $patchPanel)
     {
         Gate::authorize('admin');
-        $patchPanel->update($request->validated());
+        $patchPanel->update($request->validated() + ['user_id' => auth()->id()]);
         session()->flash('alert-success', 'Patch panel atualizado com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");
     }
@@ -70,7 +69,7 @@ class PatchPanelController extends Controller
         $porta = $request->query('porta');
 
         $salasPredio = Sala::where('predio_id', $patchPanel->rack->predio_id)->get();
-        
+
         return view('patch-panels.selecionar-sala', [
             'patchPanel' => $patchPanel,
             'salasPredio' => $salasPredio,
@@ -90,7 +89,7 @@ class PatchPanelController extends Controller
     {
         Gate::authorize('admin');
         $porta = $request->query('porta');
-        
+
         $patchPanel->salas()->wherePivot('porta', $porta)->detach($sala->id);
         session()->flash('alert-success', 'Porta desvinculada com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");

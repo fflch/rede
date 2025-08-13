@@ -9,7 +9,6 @@ use App\Http\Controllers\RackController;
 use App\Http\Controllers\PatchPanelController;
 
 Route::get('/',[IndexController::class,'index']);
-Route::get('/equipamentos/{equipamento}',[EquipamentoController::class,'show']);
 
 // Prédios
 Route::get('/predios', [PredioController::class, 'index']);
@@ -44,6 +43,14 @@ Route::get('/patch-panels/{patchPanel}/edit', [PatchPanelController::class, 'edi
 Route::put('/patch-panels/{patchPanel}', [PatchPanelController::class, 'update']);
 Route::delete('/patch-panels/{patchPanel}', [PatchPanelController::class, 'destroy']);
 
+// Equipamentos
+Route::get('/equipamentos/create', [EquipamentoController::class, 'create']);
+Route::post('/equipamentos', [EquipamentoController::class, 'store']);
+Route::get('/equipamentos/{equipamento}', [EquipamentoController::class, 'show']);
+Route::get('/equipamentos/{equipamento}/edit', [EquipamentoController::class, 'edit']);
+Route::put('/equipamentos/{equipamento}', [EquipamentoController::class, 'update']);
+Route::delete('/equipamentos/{equipamento}', [EquipamentoController::class, 'destroy']);
+
 // Vincular portas de patch panels a salas
 Route::get('/patch-panels/{patchPanel}/selecionar-sala', [PatchPanelController::class, 'selecionarSala']);
 Route::post('/patch-panels/{patchPanel}/vincular-sala', [PatchPanelController::class, 'vincularSala']);
@@ -54,3 +61,8 @@ Route::get('/salas/{sala}/selecionar-rack', [SalaController::class, 'selecionarR
 Route::get('/salas/{sala}/selecionar-patchpanel/{rack}', [SalaController::class, 'selecionarPatchPanel']);
 Route::post('/salas/{sala}/vincular-patchpanel', [SalaController::class, 'vincularPatchPanel']);
 Route::delete('/salas/{sala}/desvincular-patchpanel/{patchPanel}', [SalaController::class, 'desvincularPatchPanel']);
+
+// Vincular portas de equipamento a patch panels
+Route::get('/equipamentos/{equipamento}/portas/{porta}/vincular', [EquipamentoController::class, 'selecionarPatchPanel']);
+Route::post('/equipamentos/{equipamento}/portas/{porta}/vincular', [EquipamentoController::class, 'vincularPatchPanel']);
+Route::delete('/equipamentos/{equipamento}/portas/{porta}/desvincular/{patchPanelPorta}', [EquipamentoController::class, 'desvincularPatchPanel']);

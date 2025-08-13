@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class PatchPanel extends Model
 {
-    protected $fillable = ['nome', 'rack_id', 'qtde_portas'];
+    protected $fillable = [
+        'nome',
+        'rack_id',
+        'qtde_portas',
+        'user_id',
+    ];
 
     public function rack()
     {
@@ -30,5 +35,10 @@ class PatchPanel extends Model
         return $this->salasVinculadas()
                 ->wherePivot('porta', $porta)
                 ->first();
+    }
+
+    public function portas()
+    {
+        return $this->hasMany(Porta::class);
     }
 }
