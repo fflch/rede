@@ -18,7 +18,7 @@ class SalaController extends Controller
         Gate::authorize('admin');
         $predios = Predio::all();
         $predio_id = $request->input('predio_id');
-        
+
         return view('salas.create', [
             'predios' => $predios,
             'predio_selecionado' => $predio_id
@@ -39,8 +39,8 @@ class SalaController extends Controller
         Gate::authorize('admin');
         $patchPanelsVinculados = $sala->patchPanels()
             ->withPivot('porta')
-            ->orderBy('patch_panels.nome') 
-            ->orderBy('porta', 'asc') 
+            ->orderBy('patch_panels.nome')
+            ->orderBy('porta', 'asc')
             ->paginate(10);
 
         $racks = $sala->predio->racks;
@@ -66,7 +66,7 @@ class SalaController extends Controller
     public function update(SalaRequest $request, Sala $sala)
     {
         Gate::authorize('admin');
-        $sala->update($request->validated() + ['updated_by' => auth()->id()]);
+        $sala->update($request->validated() + ['user_id' => auth()->id()]);
         session()->flash('alert-success', 'Sala atualizada com sucesso!');
 
         return redirect("/salas/{$sala->id}");
@@ -76,7 +76,7 @@ class SalaController extends Controller
     {
         Gate::authorize('admin');
         $racks = $sala->predio->racks;
-        
+
         return view('salas.selecionar-rack', [
             'sala' => $sala,
             'racks' => $racks
@@ -131,12 +131,12 @@ class SalaController extends Controller
     {
         Gate::authorize('admin');
         $porta = $request->query('porta');
-        
+
         $sala->patchPanels()
             ->wherePivot('porta', $porta)
             ->where('patch_panel_id', $patchPanel->id)
             ->detach($patchPanel->id);
-        
+
         session()->flash('alert-success', 'Porta desvinculada com sucesso!');
 
         return redirect("/salas/{$sala->id}");

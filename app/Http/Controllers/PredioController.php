@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Predio;
 use App\Http\Requests\PredioRequest;
 use Illuminate\Support\Facades\Gate;
@@ -13,7 +12,7 @@ class PredioController extends Controller
     {
         Gate::authorize('admin');
         return view('predios.index',[
-            'predios' => Predio::all(), 
+            'predios' => Predio::all(),
          ]);
     }
 
@@ -50,7 +49,7 @@ class PredioController extends Controller
     public function update(PredioRequest $request, Predio $predio)
     {
         Gate::authorize('admin');
-        $predio->update($request->validated() + ['updated_by' => auth()->id()]);
+        $predio->update($request->validated() + ['user_id' => auth()->id()]);
         session()->flash('alert-success', 'Prédio atualizado com sucesso!');
         return redirect('/predios');
     }
@@ -63,7 +62,7 @@ class PredioController extends Controller
             session()->flash('alert-success', 'Prédio removido com sucesso!');
         } else {
             session()->flash('alert-danger', 'Prédio não deletado, pois possui salas ou racks cadastrados!');
-        }      
+        }
         return redirect('/predios');
     }
 }

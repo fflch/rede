@@ -7,18 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class PatchPanel extends Model
 {
     protected $fillable = [
-        'nome', 'rack_id', 'qtde_portas', 'user_id', 'updated_by'
+        'nome',
+        'rack_id',
+        'qtde_portas',
+        'user_id',
     ];
-
-    public function criador()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function editor()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
 
     public function rack()
     {

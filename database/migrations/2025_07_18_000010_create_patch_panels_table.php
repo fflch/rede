@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('nome');
             $table->foreignId('rack_id')->constrained();
             $table->integer('qtde_portas');
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('updated_by')->nullable()->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }

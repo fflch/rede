@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Rack;
 use App\Models\Predio;
-use App\Models\Equipamento;
 use App\Http\Requests\RackRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -16,19 +15,19 @@ class RackController extends Controller
         Gate::authorize('admin');
         $predios = Predio::all();
         $predio_id = $request->input('predio_id');
-        
+
         return view('racks.create', [
             'predios' => $predios,
             'predio_selecionado' => $predio_id
         ]);
     }
-    
+
     public function store(RackRequest $request)
     {
         Gate::authorize('admin');
         Rack::create($request->validated() + ['user_id' => auth()->id()]);
         session()->flash('alert-success', 'Rack criado com sucesso!');
-        
+
         return redirect("/predios/{$request->predio_id}");
     }
 
@@ -56,14 +55,14 @@ class RackController extends Controller
     public function update(RackRequest $request, Rack $rack)
     {
         Gate::authorize('admin');
-        $rack->update($request->validated() + ['updated_by' => auth()->id()]);
+        $rack->update($request->validated() + ['user_id' => auth()->id()]);
         session()->flash('alert-success', 'Rack atualizado com sucesso!');
 
         return redirect("/racks/{$rack->id}");
     }
 
     public function destroy(Rack $rack)
-    {      
+    {
         Gate::authorize('admin');
 
         if ($rack->patchPanels->isEmpty()) {
@@ -72,6 +71,6 @@ class RackController extends Controller
         } else {
             session()->flash('alert-danger', 'Não foi possível deletar, pois existem patch panels cadastrados neste rack');
         }
-        return redirect()->back();  
+        return redirect()->back();
     }
 }
