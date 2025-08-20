@@ -80,7 +80,7 @@ class PatchPanelController extends Controller
     public function vincularSala(VincularPortaRequest $request, PatchPanel $patchPanel)
     {
         Gate::authorize('admin');
-        $patchPanel->salas()->attach($request->sala_id, ['porta' => $request->porta]);
+        $patchPanel->salas()->attach($request->sala_id, ['porta' => $request->porta, 'user_id' => auth()->id()]);
         session()->flash('alert-success', 'Porta vinculada com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");
     }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('patch_panel_id')->constrained()->onDelete('cascade');
             $table->foreignId('sala_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('porta');
             $table->timestamps();
         });
