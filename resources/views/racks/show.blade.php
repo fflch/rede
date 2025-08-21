@@ -31,7 +31,7 @@
                         @endcan
                     </div>
                     <div class="card-body">
-                        @if($equipamentos->isEmpty())
+                        @if($rack->equipamentos->isEmpty())
                         <div class="alert alert-info">Nenhum equipamento cadastrado neste rack.</div>
                         @else
                         <div class="table-responsive">
@@ -87,7 +87,7 @@
                         @endcan
                     </div>
                     <div class="card-body">
-                        @if($patchPanels->isEmpty())
+                        @if($rack->patchPanels->isEmpty())
                         <div class="alert alert-info">Nenhum patch panel cadastrado neste rack.</div>
                         @else
                         <div class="table-responsive">
@@ -99,7 +99,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($patchPanels as $patchPanel)
+                                    @foreach($rack->patchPanels as $patchPanel)
                                     <tr>
                                         <td>
                                             <strong>{{ $patchPanel->nome }}</strong><br>
@@ -134,4 +134,8 @@
         </div>
     </div>
 </div>
+
+@include('racks.partials.patch_panel')
+
+
 @endsection

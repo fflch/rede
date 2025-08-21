@@ -35,12 +35,13 @@ class PatchPanelController extends Controller
     public function show(PatchPanel $patchPanel)
     {
         Gate::authorize('admin');
+
         $salasPredio = Sala::where('predio_id', $patchPanel->rack->predio_id)->get();
 
         return view('patch-panels.show', [
             'patchPanel' => $patchPanel,
-            'salas' => $patchPanel->salas,
-            'salasPredio' => $salasPredio,
+            'salas' => $patchPanel->salas, // TODO: redundante
+            'salasPredio' => $salasPredio, // TODO: redundante
         ]);
     }
 

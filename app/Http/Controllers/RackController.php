@@ -34,10 +34,9 @@ class RackController extends Controller
     public function show(Rack $rack)
     {
         Gate::authorize('admin');
+
         return view('racks.show', [
-            'rack' => $rack,
-            'equipamentos' => $rack->equipamentos,
-            'patchPanels' => $rack->patchPanels,
+            'rack' => $rack
         ]);
     }
 
