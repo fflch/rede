@@ -39,15 +39,15 @@ class EquipamentoRequest extends FormRequest
         return [
             'hostname.required' => 'O hostname é obrigatório',
             'hostname.max' => 'O hostname não pode ter mais que 255 caracteres',
-            'hostname.unique' => 'Já existe um equipamento com este hostname',            
+            'hostname.unique' => 'Já existe um equipamento com este hostname',
             'model.required' => 'O modelo é obrigatório',
-            'model.max' => 'O modelo não pode ter mais que 255 caracteres',            
+            'model.max' => 'O modelo não pode ter mais que 255 caracteres',
             'ip.required' => 'O IP é obrigatório',
-            'ip.ip' => 'Informe um IP válido',            
+            'ip.ip' => 'Informe um IP válido',
             'qtde_portas.required' => 'A quantidade de portas é obrigatória',
             'qtde_portas.integer' => 'A quantidade de portas deve ser um número inteiro',
             'qtde_portas.min' => 'A quantidade de portas deve ser pelo menos 1',
-            'qtde_portas.max' => 'A quantidade de portas não pode ser maior que 48',            
+            'qtde_portas.max' => 'A quantidade de portas não pode ser maior que 48',
             'rack_id.required' => 'Selecione um rack',
             'rack_id.exists' => 'Rack selecionado é inválido'
         ];

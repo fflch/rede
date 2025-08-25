@@ -20,12 +20,6 @@
     </div>
 
     <div class="card-body">
-        @if(session('alert-success'))
-            <div class="alert alert-success">
-                {{ session('alert-success') }}
-            </div>
-        @endif
-
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="card">
