@@ -5,7 +5,7 @@
     <div class="card-header bg-usp">
         <h1 class="h4 mb-0 text-dark">
             Selecionar Rack para Vincular Porta
-            <small class="text-muted d-block">Sala: {{ $sala->nome }} - Prédio: {{ $sala->predio->nome }}</small>
+            <small class="text-muted d-block">Local: {{ $sala->nome }} - Prédio: {{ $sala->predio->nome }}</small>
         </h1>
     </div>
     <div class="card-body">

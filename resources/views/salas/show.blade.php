@@ -11,7 +11,7 @@
     <div class="card-header bg-usp">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="h4 mb-0 text-dark">
-                <i class="fas fa-door-open"></i> Sala: {{ $sala->nome }}
+                <i class="fas fa-door-open"></i> Local: {{ $sala->nome }}
                 <small class="text-muted d-block">{{ $sala->predio->nome }}</small>
             </h1>
             <a href="/predios/{{ $sala->predio->id }}" class="btn btn-secondary">

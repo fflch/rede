@@ -28,18 +28,18 @@
             <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0">Salas</h2>
+                        <h2 class="h5 mb-0">Locais e Salas</h2>
                         @can('user')
                         <div>
                             <a href="/salas/create?predio_id={{ $predio->id }}" class="btn btn-success btn-sm ml-2">
-                                <i class="fas fa-plus"></i> Nova Sala
+                                <i class="fas fa-plus"></i> Novo Local/Sala
                             </a>
                         </div>
                         @endcan
                     </div>
                     <div class="card-body">
                         @if($salas->isEmpty())
-                            <div class="alert alert-info">Nenhuma sala cadastrada.</div>
+                            <div class="alert alert-info">Nenhum local ou sala cadastrados.</div>
                         @else
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -59,7 +59,7 @@
                                                 <form action="/salas/{{ $sala->id }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta sala?')">
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este local?')">
                                                         Excluir
                                                     </button>
                                                 </form>
