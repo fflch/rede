@@ -10,13 +10,27 @@ class Equipamento extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'hostname',
+        'model',
+        'ip',
+        'qtde_portas',
+        'rack_id',
+        'user_id' 
+    ];
+
     public function portas()
     {
         return $this->hasMany(Porta::class);
     }
 
-    const model = [
-        'hp_comware',
-        'alcatel_aos',
-    ];
+    public function rack()
+    {
+        return $this->belongsTo(Rack::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

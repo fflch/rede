@@ -2,51 +2,76 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col col-lg-3">
-        <ul class="list-group">
-            <li class="list-group-item"> patrimônio: {{ $equipamento->hostname }}</li>
-            <li class="list-group-item"> ip: {{ $equipamento->ip }}</li>
-            <li class="list-group-item"> <b>tipo: {{ $equipamento->poe_type }}</b></li>
-            <li class="list-group-item"> portas trunk: {{ $equipamento->uplink_extra_ports }}</li>
-            <li class="list-group-item"> portas rep: {{ $equipamento->rep_ports }}</li>
-            <li class="list-group-item"> portas impressoras: {{ $equipamento->printer_ports }}</li>
-            <li class="list-group-item"> portas exceção: {{ $equipamento->ignore_ports }}</li>
-        </ul>    
+<div class="card">
+    <div class="card-header bg-usp">
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="h4 mb-0 text-dark">
+                <i class="fas fa-network-wired"></i> Equipamento: {{ $equipamento->hostname }}
+                <small class="text-muted">
+                    Rack: {{ $equipamento->rack->nome }} | Prédio: {{ $equipamento->rack->predio->nome }}
+                </small>
+            </span>
+            <div>
+                <a href="/racks/{{ $equipamento->rack_id }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="col">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Porta</th>
-                    <th scope="col">MacAddress - Vlan</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Coletado em</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($equipamento->portas as $porta)
-                <tr>
-                    <td> {{ $porta->porta }} </td>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Informações do Equipamento</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Hostname:</strong> {{ $equipamento->hostname }}</li>
+                            <li class="list-group-item"><strong>Modelo:</strong> {{ $equipamento->model }}</li>
+                            <li class="list-group-item"><strong>IP:</strong> {{ $equipamento->ip }}</li>
+                            <li class="list-group-item"><strong>Quantidade de Portas:</strong> {{ $equipamento->qtde_portas }}</li>
+                            <li class="list-group-item"><strong>Prédio:</strong> {{ $equipamento->rack->predio->nome }}</li>
+                            <li class="list-group-item"><strong>Rack:</strong> {{ $equipamento->rack->nome }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    @if($porta->latest_snapshot)
-                        <td>
-                            @foreach($porta->latest_snapshot->macs as $mac)
-                            {{ $mac->mac }} - {{ $mac->vlan }} <br>
-                            @endforeach
-                        </td>
-
-                        <td> {{ $porta->latest_snapshot->status }} </td>
-                        <td> {{ $porta->latest_snapshot->coletado_em }} </td>
-                    @else 
-                        <td></td><td></td><td></td>
-                    @endif
-                </tr>
-                @endforeach
-                
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Portas do Equipamento ({{ $equipamento->qtde_portas }})</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th width="100px">Porta</th>
+                                <th>Status</th>
+                                <th width="180px">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for($i = 1; $i <= $equipamento->qtde_portas; $i++)
+                            <tr>
+                                <td><strong>{{ $i }}</strong></td>
+                                <td>
+                                    <span class="badge bg-secondary">Livre</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted">Botão vinculo</span>
+                                </td>
+                            </tr>
+                            @endfor
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
 @endsection
