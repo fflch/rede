@@ -16,7 +16,7 @@
                 <input type="hidden" name="sala_id" value="{{ $sala->id }}">
                 <input type="hidden" name="porta" value="{{ $porta }}">
                 <button type="submit" class="btn btn-link text-left w-100 text-decoration-none text-dark">
-                    Sala {{ $sala->nome }}
+                    Local: {{ $sala->nome }}
                 </button>
             </form>
             @endforeach

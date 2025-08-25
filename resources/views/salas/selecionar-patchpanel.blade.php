@@ -4,7 +4,7 @@
 <div class="card">
     <div class="card-header bg-usp">
         <h1 class="h4 mb-0 text-dark">
-            Vincular Porta da Sala: {{ $sala->nome }}
+            Vincular Porta de {{ $sala->nome }}
             <small class="text-muted d-block">Rack: {{ $rack->nome }} - Prédio: {{ $sala->predio->nome }}</small>
         </h1>
     </div>

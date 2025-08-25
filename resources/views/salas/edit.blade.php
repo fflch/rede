@@ -3,7 +3,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h1>Editar Sala: {{ $sala->nome }}</h1>
+        <h1>Editar Local: {{ $sala->nome }}</h1>
     </div>
     <div class="card-body">
         <form action="/salas/{{ $sala->id }}" method="POST">
@@ -22,7 +22,7 @@
             </div>
             
             <div class="mb-3">
-                <label for="nome" class="form-label">Nome/Número da Sala *</label>
+                <label for="nome" class="form-label">Nome/Número do Local *</label>
                 <input type="text" class="form-control" id="nome" name="nome" value="{{ $sala->nome }}">
             </div>
             
