@@ -7,6 +7,11 @@ $menu = [
         'url' => config('app.url') . '/predios',
         'can' => 'admin',
     ],
+    [
+        'text' => '<i class="fas fa-plug"></i> Tipos de Porta',
+        'url' => config('app.url') . '/tipo-portas',
+        'can' => 'admin',
+    ],
 ];
 
 $right_menu = [
