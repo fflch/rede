@@ -8,7 +8,7 @@ use App\Models\Predio;
 use App\Models\PatchPanel;
 use App\Models\Rack;
 use App\Http\Requests\SalaRequest;
-use App\Http\Requests\VincularPortaRequest;
+use App\Http\Requests\VincularPortaSalaRequest;
 use Illuminate\Support\Facades\Gate;
 
 class SalaController extends Controller
@@ -100,12 +100,13 @@ class SalaController extends Controller
         ]);
     }
 
-    public function vincularPatchPanel(VincularPortaRequest $request, Sala $sala)
+    public function vincularPatchPanel(VincularPortaSalaRequest $request, Sala $sala)
     {
         Gate::authorize('admin');
 
         $patchPanel = PatchPanel::findOrFail($request->patch_panel_id);
         $portas = array_map('intval', $request->portas ?? []);
+        $tiposPorta = $request->tipos_porta ?? [];
 
         $portasOcupadas = $patchPanel->salasVinculadas()
             ->whereIn('porta', $portas)
@@ -115,12 +116,19 @@ class SalaController extends Controller
         $portasDisponiveis = array_diff($portas, $portasOcupadas);
 
         foreach ($portasDisponiveis as $porta) {
-            $sala->patchPanels()->attach($patchPanel->id, [
+            $dadosVinculo = [
                 'porta' => $porta,
                 'user_id' => auth()->id(),
                 'created_at' => now(),
                 'updated_at' => now()
-            ]);
+            ];
+
+            // Só adiciona tipo_porta_id se foi selecionado para esta porta
+            if (!empty($tiposPorta[$porta])) {
+                $dadosVinculo['tipo_porta_id'] = $tiposPorta[$porta];
+            }
+
+            $sala->patchPanels()->attach($patchPanel->id, $dadosVinculo);
         }
 
         session()->flash('alert-success', 'Portas vinculadas com sucesso!');

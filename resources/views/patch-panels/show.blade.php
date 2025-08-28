@@ -16,7 +16,6 @@
             <a href="/racks/{{ $patchPanel->rack->id }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
-            </a>
         </div>
     </div>
 
@@ -33,13 +32,19 @@
                                 <th width="100px">Porta</th>
                                 <th>Status</th>
                                 <th>Local Vinculado</th>
+                                <th>Tipo de Porta</th>
                                 <th width="180px">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach(range(1, $patchPanel->qtde_portas) as $porta)
                             @php
-                                $vinculo = $patchPanel->salasVinculadas->where('pivot.porta', $porta)->first();
+                                // Buscar a sala vinculada a esta porta
+                                $vinculo = $salasVinculadas->first(function ($sala) use ($porta) {
+                                    return $sala->pivot->porta == $porta;
+                                });
+                                
+                                $tipoPorta = $vinculo ? $vinculo->pivot->tipoPorta : null;
                             @endphp
                             <tr>
                                 <td><strong>{{ $porta }}</strong></td>
@@ -58,6 +63,13 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @if($tipoPorta)
+                                        {{ $tipoPorta->nome }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
                                     @can('user')
                                     @if($vinculo)
                                         <form action="/patch-panels/{{ $patchPanel->id }}/desvincular-sala/{{ $vinculo->id }}?porta={{ $porta }}" method="POST" class="d-inline">
@@ -70,7 +82,7 @@
                                     @else
                                         <a href="/patch-panels/{{ $patchPanel->id }}/selecionar-sala?porta={{ $porta }}" class="btn btn-primary btn-sm">
                                             Vincular
-                                        </button>
+                                        </a>
                                     @endif
                                     @endcan
                                 </td>

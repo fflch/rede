@@ -7,7 +7,7 @@ use App\Models\PatchPanel;
 use App\Models\Rack;
 use App\Models\Sala;
 use App\Http\Requests\PatchPanelRequest;
-use App\Http\Requests\VincularPortaRequest;
+use App\Http\Requests\VincularPortaPatchPanelRequest;
 use Illuminate\Support\Facades\Gate;
 
 class PatchPanelController extends Controller
@@ -35,13 +35,19 @@ class PatchPanelController extends Controller
     public function show(PatchPanel $patchPanel)
     {
         Gate::authorize('admin');
+        
+        $salasVinculadas = $patchPanel->salas()
+            ->withPivot('porta', 'tipo_porta_id') 
+            ->orderBy('salas.nome')
+            ->orderBy('porta', 'asc')
+            ->get();
 
         $salasPredio = Sala::where('predio_id', $patchPanel->rack->predio_id)->get();
 
         return view('patch-panels.show', [
             'patchPanel' => $patchPanel,
-            'salas' => $patchPanel->salas, // TODO: redundante
-            'salasPredio' => $salasPredio, // TODO: redundante
+            'salasVinculadas' => $salasVinculadas, 
+            'salasPredio' => $salasPredio,
         ]);
     }
 
@@ -78,10 +84,39 @@ class PatchPanelController extends Controller
         ]);
     }
 
-    public function vincularSala(VincularPortaRequest $request, PatchPanel $patchPanel)
+    public function selecionarTipoPorta(PatchPanel $patchPanel, Sala $sala, Request $request)
     {
         Gate::authorize('admin');
-        $patchPanel->salas()->attach($request->sala_id, ['porta' => $request->porta, 'user_id' => auth()->id()]);
+        $porta = $request->query('porta');
+
+        return view('patch-panels.selecionar-tipo-porta', [
+            'patchPanel' => $patchPanel,
+            'sala' => $sala,
+            'porta' => $porta,
+            'tipoPortas' => \App\Models\TipoPorta::all()
+        ]);
+    }
+
+    public function vincularSala(VincularPortaPatchPanelRequest $request, PatchPanel $patchPanel)
+    {
+        Gate::authorize('admin');
+        
+        $porta = $request->porta ?? $request->query('porta');
+        
+        // Verificar se a porta já está vinculada
+        if ($patchPanel->salas()->wherePivot('porta', $porta)->exists()) {
+            session()->flash('alert-danger', 'Esta porta já está vinculada!');
+            return redirect("/patch-panels/{$patchPanel->id}");
+        }
+
+        $dadosVinculo = [
+            'porta' => $porta, 
+            'user_id' => auth()->id(),
+            'tipo_porta_id' => $request->tipo_porta_id // Pode ser null
+        ];
+
+        $patchPanel->salas()->attach($request->sala_id, $dadosVinculo);
+        
         session()->flash('alert-success', 'Porta vinculada com sucesso!');
         return redirect("/patch-panels/{$patchPanel->id}");
     }

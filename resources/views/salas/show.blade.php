@@ -40,16 +40,27 @@
                             <th>Rack</th>
                             <th>Prédio</th>
                             <th>Porta</th>
+                            <th>Tipo de Porta</th> 
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($patchPanels as $pp)
+                        @php
+                            $tipoPorta = $pp->pivot->tipoPorta; 
+                        @endphp
                         <tr>
                             <td>{{ $pp->nome }}</td>
                             <td>{{ $pp->rack->nome }}</td>
                             <td>{{ $pp->rack->predio->nome }}</td>
                             <td>{{ $pp->pivot->porta }}</td>
+                            <td>
+                                @if($tipoPorta)
+                                    {{ $tipoPorta->nome }}
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td>
                                 @can('user')
                                     <form action="/salas/{{ $sala->id }}/desvincular-patchpanel/{{ $pp->id }}?porta={{ $pp->pivot->porta }}" method="POST">

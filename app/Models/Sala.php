@@ -20,7 +20,15 @@ class Sala extends Model
     public function patchPanels()
     {
         return $this->belongsToMany(PatchPanel::class)
-                ->withPivot('porta','user_id')
+                ->using(PatchPanelSala::class) 
+                ->withPivot('porta','user_id','tipo_porta_id')
+                ->withTimestamps();
+    }
+
+    public function tipoPortas()
+    {
+        return $this->belongsToMany(TipoPorta::class, 'patch_panel_sala', 'sala_id', 'tipo_porta_id')
+                ->withPivot('porta', 'patch_panel_id')
                 ->withTimestamps();
     }
 }

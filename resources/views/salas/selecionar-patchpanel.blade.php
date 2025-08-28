@@ -35,7 +35,7 @@
                     @php
                         $selectedPP = $patchPanels->firstWhere('id', request('patch_panel_id'));
                         $portasOcupadas = $selectedPP->salasVinculadas->pluck('pivot.porta')->toArray();
-                        $portasDisponiveis = array_diff(range(1, $selectedPP->qtde_portas), $portasOcupadas);
+                        $tipoPortas = \App\Models\TipoPorta::all();
                     @endphp
                     <div class="col-md-8">
                         <form action="/salas/{{ $sala->id }}/vincular-patchpanel" method="POST">
@@ -46,35 +46,55 @@
                             <div class="card">
                                 <div class="card-header bg-light">
                                     <h5 class="mb-0">Portas do Patch Panel: {{ $selectedPP->nome }}</h5>
+                                    <small class="text-muted">Marque as portas que deseja vincular</small>
                                 </div>
                                 <div class="card-body">
-                                    <div class="form-group">
-                                        <label>Selecione as Portas</label>
+                                    @if(count($portasOcupadas) >= $selectedPP->qtde_portas)
+                                        <div class="alert alert-warning">
+                                            Todas as portas deste patch panel estão ocupadas.
+                                        </div>
+                                    @else
                                         <div class="row">
                                             @foreach(range(1, $selectedPP->qtde_portas) as $i)
-                                                <div class="col-md-3 col-sm-4 col-6 mb-2">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="portas[]" 
-                                                            id="porta-{{ $i }}" 
-                                                            value="{{ $i }}"
-                                                            {{ in_array($i, $portasOcupadas) ? 'disabled' : '' }}>
-                                                        <label class="form-check-label" for="porta-{{ $i }}">
-                                                            Porta {{ $i }}
-                                                            @if(in_array($i, $portasOcupadas))
-                                                                <small class="text-danger">(Ocupada)</small>
-                                                            @endif
-                                                        </label>
+                                                @if(!in_array($i, $portasOcupadas))
+                                                    <div class="col-md-6 col-sm-6 col-12 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <div class="form-check mb-2">
+                                                                    <input class="form-check-input" type="checkbox" 
+                                                                        name="portas[]" 
+                                                                        id="porta-{{ $i }}" 
+                                                                        value="{{ $i }}">
+                                                                    <label class="form-check-label" for="porta-{{ $i }}">
+                                                                        <strong>Porta {{ $i }}</strong>
+                                                                    </label>
+                                                                </div>
+                                                                
+                                                                <div class="form-group">
+                                                                    <label for="tipo_porta_{{ $i }}" class="small">Tipo de Porta (Opcional):</label>
+                                                                    <select class="form-control form-control-sm" 
+                                                                        name="tipos_porta[{{ $i }}]" 
+                                                                        id="tipo_porta_{{ $i }}">
+                                                                        <option value="">-- Não informar --</option>
+                                                                        @foreach($tipoPortas as $tipo)
+                                                                            <option value="{{ $tipo->id }}">{{ $tipo->nome }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @endif
                                             @endforeach
                                         </div>
-                                    </div>
+                                    @endif
                                 </div>
                                 <div class="card-footer bg-light">
                                     <div class="d-flex justify-content-between">
                                         <a href="/salas/{{ $sala->id }}/selecionar-rack" class="btn btn-secondary">Voltar</a>
-                                        <button type="submit" class="btn btn-primary">Vincular Portas Selecionadas</button>
+                                        @if(count($portasOcupadas) < $selectedPP->qtde_portas)
+                                            <button type="submit" class="btn btn-primary">Vincular Portas Selecionadas</button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

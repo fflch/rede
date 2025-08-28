@@ -21,14 +21,15 @@ class PatchPanel extends Model
     public function salas()
     {
         return $this->belongsToMany(Sala::class)
-                ->withPivot('porta','user_id')
+                ->using(PatchPanelSala::class)
+                ->withPivot('porta','user_id','tipo_porta_id')
                 ->withTimestamps();
     }
 
     public function salasVinculadas()
     {
         return $this->belongsToMany(Sala::class, 'patch_panel_sala', 'patch_panel_id', 'sala_id')
-                ->withPivot('porta')
+                ->withPivot('porta', 'tipo_porta_id')
                 ->withTimestamps();
     }
 
@@ -42,5 +43,12 @@ class PatchPanel extends Model
     public function portas()
     {
         return $this->hasMany(Porta::class);
+    }
+
+    public function tipoPortas()
+    {
+        return $this->belongsToMany(TipoPorta::class, 'patch_panel_sala', 'patch_panel_id', 'tipo_porta_id')
+                ->withPivot('porta', 'sala_id')
+                ->withTimestamps();
     }
 }
