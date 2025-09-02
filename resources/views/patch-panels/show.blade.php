@@ -72,13 +72,19 @@
                                 <td>
                                     @can('user')
                                     @if($vinculo)
-                                        <form action="/patch-panels/{{ $patchPanel->id }}/desvincular-sala/{{ $vinculo->id }}?porta={{ $porta }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja desvincular esta porta?')">
-                                                Desvincular
-                                            </button>
-                                        </form>
+                                        <div class="btn-group" role="group">
+                                            <a href="/patch-panels/{{ $patchPanel->id }}/editar-tipo-porta/{{ $vinculo->id }}?porta={{ $porta }}" 
+                                            class="btn btn-warning btn-sm">
+                                                Editar
+                                            </a>
+                                            <form action="/patch-panels/{{ $patchPanel->id }}/desvincular-sala/{{ $vinculo->id }}?porta={{ $porta }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja desvincular esta porta?')">
+                                                    Desvincular
+                                                </button>
+                                            </form>
+                                        </div>
                                     @else
                                         <a href="/patch-panels/{{ $patchPanel->id }}/selecionar-sala?porta={{ $porta }}" class="btn btn-primary btn-sm">
                                             Vincular
