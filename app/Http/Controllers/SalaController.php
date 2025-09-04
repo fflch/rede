@@ -150,6 +150,54 @@ class SalaController extends Controller
         return redirect("/salas/{$sala->id}");
     }
 
+    public function editarTipoPorta(Sala $sala, PatchPanel $patchPanel, Request $request)
+    {
+        Gate::authorize('admin');
+        $porta = $request->query('porta');
+
+        // Verificar se existe o vínculo
+        $vinculo = $sala->patchPanels()
+            ->wherePivot('porta', $porta)
+            ->where('patch_panel_id', $patchPanel->id)
+            ->first();
+
+        if (!$vinculo) {
+            session()->flash('alert-danger', 'Vínculo não encontrado!');
+            return redirect("/salas/{$sala->id}");
+        }
+
+        return view('salas.editar-tipo-porta', [
+            'sala' => $sala,
+            'patchPanel' => $patchPanel,
+            'porta' => $porta,
+            'tipoPortaAtual' => $vinculo->pivot->tipo_porta_id,
+            'tipoPortas' => \App\Models\TipoPorta::all()
+        ]);
+    }
+
+    public function atualizarTipoPorta(Request $request, Sala $sala, PatchPanel $patchPanel)
+    {
+        Gate::authorize('admin');
+        $porta = $request->porta;
+
+        // Validar a requisição
+        $request->validate([
+            'tipo_porta_id' => 'nullable|exists:tipo_portas,id'
+        ]);
+
+        // Atualizar o tipo de porta no vínculo
+        $sala->patchPanels()
+            ->wherePivot('porta', $porta)
+            ->where('patch_panel_id', $patchPanel->id)
+            ->updateExistingPivot($patchPanel->id, [
+                'tipo_porta_id' => $request->tipo_porta_id,
+                'updated_at' => now()
+            ]);
+
+        session()->flash('alert-success', 'Tipo de porta atualizado com sucesso!');
+        return redirect("/salas/{$sala->id}");
+    }
+
     public function destroy(Sala $sala)
     {
         Gate::authorize('admin');

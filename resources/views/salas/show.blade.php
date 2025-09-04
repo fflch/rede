@@ -63,13 +63,19 @@
                             </td>
                             <td>
                                 @can('user')
-                                    <form action="/salas/{{ $sala->id }}/desvincular-patchpanel/{{ $pp->id }}?porta={{ $pp->pivot->porta }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja desvincular esta porta?')">
-                                            <i class="fas fa-unlink"></i> Desvincular
-                                        </button>
-                                    </form>
+                                    <div class="btn-group" role="group">
+                                        <a href="/salas/{{ $sala->id }}/editar-tipo-porta/{{ $pp->id }}?porta={{ $pp->pivot->porta }}" 
+                                        class="btn btn-warning btn-sm">
+                                            Editar tipo de porta
+                                        </a>
+                                        <form action="/salas/{{ $sala->id }}/desvincular-patchpanel/{{ $pp->id }}?porta={{ $pp->pivot->porta }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja desvincular esta porta?')">
+                                                Desvincular
+                                            </button>
+                                        </form>
+                                    </div>
                                 @endcan
                             </td>
                         </tr>
